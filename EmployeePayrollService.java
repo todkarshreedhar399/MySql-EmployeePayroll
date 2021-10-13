@@ -9,8 +9,9 @@ public class EmployeePayRollService {
     PreparedStatement preparedStatement;
     Connection connection = getConfig();
 
-    public List<Employee> queryExecute(String query) {
+    public List<Employee> fetchData() {
         empList = new ArrayList<>();
+        String query = "SELECT * from employee_payroll";
         try {
             preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -32,8 +33,7 @@ public class EmployeePayRollService {
 
                 empList.add(employee);
             }
-        } catch (
-                SQLException e) {
+        } catch (SQLException e) {
             throw new EmployeeException("invalid column label");
         }
         return empList;
@@ -56,8 +56,7 @@ public class EmployeePayRollService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String sql = "SELECT * FROM employee_payroll";
-        queryExecute(sql);
+        fetchData();
         for (Employee employee : empList) {
             if (employee.getEmpName().equals(empName)) {
                 return employee.getBasicPay();
@@ -108,8 +107,15 @@ public class EmployeePayRollService {
         final int EXIT = 6;
         int choice = 0;
         while (choice != EXIT) {
-            System.out.println("Select \n1. SUM\n2. AVERAGE\n3. MINIMUM" +
-                    "\n4. MAXIMUM\n5. COUNT\n6. EXIT\n");
+            System.out.println("""
+                    Select\s
+                    1. SUM
+                    2. AVERAGE
+                    3. MINIMUM
+                    4. MAXIMUM
+                    5. COUNT
+                    6. EXIT
+                    """);
             choice = scanner.nextInt();
             switch (choice) {
                 case 1 -> calculateQuery("SELECT Gender, SUM(BasicPay) FROM employee_payroll GROUP BY Gender");
@@ -121,7 +127,7 @@ public class EmployeePayRollService {
         }
     }
 
-    public void calculateQuery(String calculate){
+    public void calculateQuery(String calculate) {
         List<Employee> result = new ArrayList<>();
 
         try {
@@ -134,18 +140,46 @@ public class EmployeePayRollService {
 
                 result.add(employee);
             }
-            if (calculate.contains("COUNT")){
+            if (calculate.contains("COUNT")) {
                 for (Employee i : result) {
                     System.out.println("Gender: " + i.getGender() + " COUNT: " + i.getBasicPay());
                 }
-            }
-            else {
+            } else {
                 for (Employee i : result) {
                     System.out.println("Gender: " + i.getGender() + " Basic pay: " + i.getBasicPay());
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void addEmployee(String empName,String phoneNumber, String address,String department,String gender,
+            double basicPay,double deductions,double taxablePay,double incomeTax,double netPay,
+                                    LocalDate empStart) {
+        empList = new ArrayList<>();
+
+        String query = "INSERT INTO employee_payroll(EmpName, Department, Gender, BasicPay, Deductions, TaxablePay, IncomeTax, NetPay, EmpStart, PhoneNumber, Address)" +
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+            preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, empName);
+            preparedStatement.setString(2, department);
+            preparedStatement.setString(3,gender);
+            preparedStatement.setDouble(4, basicPay);
+            preparedStatement.setDouble(5,deductions);
+            preparedStatement.setDouble(6, taxablePay);
+            preparedStatement.setDouble(7, incomeTax);
+            preparedStatement.setDouble(8, netPay);
+            preparedStatement.setDate(9, Date.valueOf(empStart));
+            preparedStatement.setString(10,phoneNumber);
+            preparedStatement.setString(11,address);
+            preparedStatement.executeUpdate();
+            fetchData();
+            display();
+        } catch (SQLException e) {
+            throw new EmployeeException("invalid column label");
         }
     }
 }

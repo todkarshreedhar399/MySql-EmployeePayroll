@@ -1,3 +1,4 @@
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -9,13 +10,21 @@ public class EmployeePayRoll {
         final int EXIT = 10;
         int choice = 0;
         while (choice != EXIT) {
-            System.out.println("enter your choice\n1. Execute query\n2. update basic pay\n3. display employee roll" +
-                    "\n4. select range of employee\n5. calculate\n10. EXIT\n");
+            System.out.println("""
+                    enter your choice
+                    1. Execute query
+                    2. update basic pay
+                    3. display employee roll
+                    4. select range of employee
+                    5. calculate
+                    6. add employee
+                    10. EXIT
+                    """);
             choice = scanner.nextInt();
             switch (choice) {
                 case 1 -> {
-                    String query = "select * from employee_payroll";
-                    employeePayRollService.queryExecute(query);
+
+                    employeePayRollService.fetchData();
                     employeePayRollService.display();
                 }
                 case 2 -> {
@@ -34,6 +43,32 @@ public class EmployeePayRoll {
                     employeePayRollService.selectEmployee(iDate,eDate);
                 }
                 case 5-> employeePayRollService.calculate();
+                case 6-> {
+                    System.out.println("Enter employee name");
+                    String empName = scanner.next();
+                    System.out.println("Enter phone Number");
+                    String phoneNumber = scanner.next();
+                    System.out.println("Enter address");
+                    String address = scanner.next();
+                    System.out.println("Enter employee department");
+                    String department = scanner.next();
+                    System.out.println("Enter Gender");
+                    String gender = scanner.next();
+                    System.out.println("Enter Employee BasicPay");
+                    double basicPay = scanner.nextDouble();
+                    System.out.println("Enter Employee Deductions");
+                    double deductions = scanner.nextDouble();
+                    System.out.println("Enter Employee TaxablePay");
+                    double taxablePay = scanner.nextDouble();
+                    System.out.println("Enter Employee IncomeTax");
+                    double incomeTax = scanner.nextDouble();
+                    System.out.println("Enter Employee NetPay");
+                    double netPay = scanner.nextDouble();
+                    System.out.println("Enter Employee Start date");
+                    LocalDate empStart = LocalDate.parse(scanner.next());
+                    Date eStart = Date.valueOf(empStart);
+                    employeePayRollService.addEmployee(empName, phoneNumber, address, department, gender, basicPay, deductions, taxablePay, incomeTax, netPay,empStart));
+                }
                 case EXIT -> System.out.println("good bye");
             }
         }

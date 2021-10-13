@@ -1,8 +1,8 @@
-import model.Employee;
 import org.junit.Assert;
 import org.junit.Test;
 import service.EmployeePayRollService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class EmployeePayRollTest {
@@ -10,9 +10,8 @@ public class EmployeePayRollTest {
 
     @Test
     public void givenEmployeePayrollDB_WhenRetrieved_ShouldMatchEmployeeCount() {
-        String sql = "select * from employee_payroll";
-        List<Employee> employeePayrollDataList = employeePayRollService.queryExecute(sql);
-        Assert.assertEquals(8, employeePayrollDataList.size());
+        List<Employee> employeePayrollDataList = employeePayRollService.fetchData();
+        Assert.assertEquals(10, employeePayrollDataList.size());
     }
 
     @Test
@@ -31,6 +30,12 @@ public class EmployeePayRollTest {
         Assert.assertEquals(BasicPay, salaryUpdated,0.0);
     }
 
+    @Test
+    public void givenNewEmployee_WhenAdded_ShouldReturnEmployeeName() throws EmployeeException {
+        employeePayRollService.addEmployee("Ankita","582471365","delhi","marketing","F",
+                780000,2000,3000,1000,72000, LocalDate.ofEpochDay(2015-02-21));
+        String eName = employeePayRollService.fetchData().get(employeePayRollService.empList.size()-1).getEmpName();
+        Assert.assertEquals(eName,"Ankita");
+    }
+
 }
-
-
