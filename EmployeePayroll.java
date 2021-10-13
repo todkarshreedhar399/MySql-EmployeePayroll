@@ -1,4 +1,7 @@
 
+
+
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class EmployeePayRoll {
@@ -9,7 +12,8 @@ public class EmployeePayRoll {
         final int EXIT = 10;
         int choice = 0;
         while (choice != EXIT) {
-            System.out.println("enter your choice\n1. Execute query\n2. update basic pay\n3. display employee roll\n10. EXIT");
+            System.out.println("enter your choice\n1. Execute query\n2. update basic pay\n3. display employee roll" +
+                    "\n4. select range of employee\n10. EXIT\n");
             choice = scanner.nextInt();
             switch (choice) {
                 case 1 -> {
@@ -25,6 +29,13 @@ public class EmployeePayRoll {
                     employeePayRollService.updateBasicPay(empName, basicPay);
                 }
                 case 3 -> employeePayRollService.display();
+                case 4 -> {
+                    System.out.println("enter initial date");
+                    LocalDate iDate = LocalDate.parse(scanner.next());
+                    System.out.println("enter final date");
+                    LocalDate eDate = LocalDate.parse(scanner.next());
+                    employeePayRollService.selectEmployee(iDate,eDate);
+                }
                 case EXIT -> System.out.println("good bye");
             }
         }
